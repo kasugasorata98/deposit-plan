@@ -23,7 +23,7 @@ function main() {
     depositPlans: [...oneTimeDepositPlan, ...monthlyDepositPlan],
   }
   // Create fund deposits to allocate to portfolios
-  const fundDeposits: FundDeposit[] = [{ amount: 100 }, { amount: 100 }]
+  const fundDeposits: FundDeposit[] = [{ amount: 10500 }, { amount: 100 }]
   // Create FundAllocationController instance and allocate funds to customer's portfolios
   const fundAllocationController = new FundAllocationController(customer)
   const { portfolios } = fundAllocationController.allocateFunds(fundDeposits)
