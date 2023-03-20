@@ -24,11 +24,20 @@ function main() {
   }
   // Create fund deposits to allocate to portfolios
   const fundDeposits: FundDeposit[] = [{ amount: 10500 }, { amount: 100 }]
+
   // Create FundAllocationController instance and allocate funds to customer's portfolios
   const fundAllocationController = new FundAllocationController(customer)
+  fundAllocationController.validate(customer, fundDeposits)
   const { portfolios } = fundAllocationController.allocateFunds(fundDeposits)
 
   // Print the updated balances of each portfolio
   console.log(portfolios)
 }
-main()
+
+try {
+  main()
+} catch (err: any) {
+  console.log({
+    error: err?.message,
+  })
+}

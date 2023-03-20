@@ -11,6 +11,19 @@ export class FundAllocationController {
     this.customer = customer
   }
 
+  // Validates the customer data to make sure the deposit plan does not contain 0 or negative.
+  // Validates the customer data to make sure the fund deposit isnt 0 or negative
+  validate(customer: Customer, fundDeposits: FundDeposit[]) {
+    customer.depositPlans.forEach(depositPlan => {
+      if (depositPlan.amount <= 0)
+        throw Error('Deposit Plans must be a positive number')
+    })
+    fundDeposits.forEach(fundDeposit => {
+      if (fundDeposit.amount <= 0)
+        throw Error('Fund Deposits must be a positive number')
+    })
+  }
+
   allocateFunds(fundDeposits: FundDeposit[]): Customer {
     //Calculate total deposit amount
     const totalDepositAmount =

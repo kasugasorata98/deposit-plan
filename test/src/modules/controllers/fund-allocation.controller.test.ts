@@ -20,6 +20,93 @@ describe('FundAllocationController', () => {
     controller = new FundAllocationController(customer)
   })
 
+  describe('validate', () => {
+    it('should not throw an error when given valid customer data and fund deposits', () => {
+      const customer = {
+        portfolios: [
+          { name: 'High Risk', balance: 0 },
+          { name: 'Retirement', balance: 0 },
+        ],
+        depositPlans: [
+          { portfolioName: 'High Risk', amount: 500 },
+          { portfolioName: 'Retirement', amount: 100 },
+        ],
+      }
+      const fundDeposits = [{ amount: 100 }, { amount: 200 }]
+      const fundAllocationController = new FundAllocationController(customer)
+
+      expect(() => {
+        fundAllocationController.validate(customer, fundDeposits)
+      }).not.toThrow()
+    })
+
+    it('should not throw an error when given valid customer data with no deposit plans and fund deposits', () => {
+      const customer = {
+        portfolios: [
+          { name: 'High Risk', balance: 0 },
+          { name: 'Retirement', balance: 0 },
+        ],
+        depositPlans: [],
+      }
+      const fundDeposits = [{ amount: 100 }, { amount: 200 }]
+      const fundAllocationController = new FundAllocationController(customer)
+
+      expect(() => {
+        fundAllocationController.validate(customer, fundDeposits)
+      }).not.toThrow()
+    })
+
+    it('should not throw an error when given valid customer data and no fund deposits', () => {
+      const customer = {
+        portfolios: [
+          { name: 'High Risk', balance: 0 },
+          { name: 'Retirement', balance: 0 },
+        ],
+        depositPlans: [
+          { portfolioName: 'High Risk', amount: 500 },
+          { portfolioName: 'Retirement', amount: 100 },
+        ],
+      }
+      const fundDeposits: FundDeposit[] = []
+      const fundAllocationController = new FundAllocationController(customer)
+
+      expect(() => {
+        fundAllocationController.validate(customer, fundDeposits)
+      }).not.toThrow()
+    })
+    it('should throw an error if any deposit plan has an amount less than or equal to zero', () => {
+      const customer: Customer = {
+        depositPlans: [
+          { portfolioName: 'High Risk', amount: 10000 },
+          { portfolioName: 'Retirement', amount: -500 },
+        ],
+        portfolios: [],
+      }
+      const fundDeposits: FundDeposit[] = [{ amount: 100 }, { amount: 100 }]
+      const fundAllocationController = new FundAllocationController(customer)
+
+      expect(() => {
+        fundAllocationController.validate(customer, fundDeposits)
+      }).toThrow('Deposit Plans must be a positive number')
+    })
+
+    it('should throw an error if any fund deposit amount is less than or equal to zero', () => {
+      const customer: Customer = {
+        depositPlans: [
+          { portfolioName: 'High Risk', amount: 10000 },
+          { portfolioName: 'Retirement', amount: 500 },
+        ],
+        portfolios: [],
+      }
+      const fundDeposits: FundDeposit[] = [{ amount: 100 }, { amount: 0 }]
+      const fundAllocationController = new FundAllocationController(customer)
+
+      expect(() => {
+        fundAllocationController.validate(customer, fundDeposits)
+      }).toThrow('Fund Deposits must be a positive number')
+    })
+  })
+
   describe('allocateFunds', () => {
     it('should allocate funds to the correct portfolios based on the provided deposit plans and fund deposits', () => {
       const fundDeposits: FundDeposit[] = [{ amount: 10500 }, { amount: 100 }]
